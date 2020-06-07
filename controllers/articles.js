@@ -1,0 +1,102 @@
+let Article=require('../Models/Articles');
+module.exports.getAll=async(req,res)=>{
+    try{
+        Article.getAll(req.con,(e,result)=>{
+            if(e)
+            {
+                console.log(e)
+                res.status(500).json({
+                    err:true,
+                    msg:String(e)
+                })
+                return
+            }
+            res.status(200).json({
+                err:false,
+                data:result
+            })
+        })
+    }catch(e){
+        console.log(e)
+        res.status(500).json({
+            err:true,
+            msg:String(e)
+        })
+    }
+}
+module.exports.update=async(req,res)=>{
+    try{
+        let feild=req.body.update;
+        let data=req.con.escape(req.body[feild])
+        let id=req.body.id
+        if(!feild||!data||!id||(!(['image','details'].includes(feild))))
+            throw "Bad Request"
+        if(feild=='image')
+            Article.updateImage(req.con,id,data,(e,result)=>{
+                if(e)
+                {
+                    console.log(e)
+                    res.status(500).json({
+                        err:true,
+                        msg:String(e)
+                    })
+                    return
+                }
+                res.status(200).json({
+                    err:false,
+                    data:result[1][0]
+                })
+            })
+        if(feild=='details')
+            Article.updateDetails(req.con,id,data,(e,result)=>{
+                if(e)
+                {
+                    console.log(e)
+                    res.status(500).json({
+                        err:true,
+                        msg:String(e)
+                    })
+                    return
+                }
+                res.status(200).json({
+                    err:false,
+                    data:result[1][0]
+                })
+            })
+    }catch(e){
+        console.log(e)
+        res.status(500).json({
+            err:true,
+            msg:String(e)
+        })
+    }
+}
+module.exports.add=async(req,res)=>{
+    try{
+        let image=req.con.escape(req.body.image);
+        let details=req.con.escape(req.body.details);
+        if(!image||!details)
+            throw "Bad Request"
+        Article.create(req.con,{img:image,details},(e,result)=>{
+            if(e)
+            {
+                console.log(e)
+                res.status(500).json({
+                    err:true,
+                    msg:String(e)
+                })
+                return
+            }
+            res.status(200).json({
+                err:false,
+                data:result
+            })
+        })
+    }catch(e){
+        console.log(e)
+        res.status(500).json({
+            err:true,
+            msg:String(e)
+        })
+    }
+}

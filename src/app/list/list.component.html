@@ -1,0 +1,50 @@
+<div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" class="list" fxLayoutAlign="center">
+    <mat-card [@load]="load" class="card-picture"  *ngFor="let article of articles;let i = index">
+      <img mat-card-image class="img" src={{article.pic}}>
+      <mat-dialog-content>
+        {{article.details}}
+        <br>
+        <br>
+      </mat-dialog-content>
+        <div *ngIf="i!=updateImage && i!=updateDetails">
+            <span class="button" (click)="setupdateImage(i)">Update Image</span>
+            <span  class="button" (click)="setupdateDetails(i)">Update Details</span>
+        </div>
+        <div *ngIf="i==updateImage">
+            <mat-form-field style="margin-bottom: 5px;" appearance="outline" [floatLabel]="floatLabelControl.value">
+                <input matInput id="updateImage" placeholder="New Url" type="text">
+                </mat-form-field>
+                <br>
+                <span (click)="updateImageValue()" class="button" mat-raised-button color="primary">Update</span>
+        </div>
+        <div *ngIf="i==updateDetails">
+            <mat-form-field style="margin-bottom: 5px;"  appearance="outline" [floatLabel]="floatLabelControl.value">
+                <input matInput id="updateDetails" value={{article.details}} type="text">
+                </mat-form-field>
+                <br>
+                <span  class="button" (click)="updateDetailsValue()" mat-raised-button color="primary">Update</span>
+        </div>
+    </mat-card>
+    <mat-card class="new-card-preview" *ngIf="!newArticle; else elseBlock" (click)="toggleNew()">
+        <i class="fas fa-plus" style="font-size:100px;color:blue"></i>
+        <p style="font-size: 64px;margin: 1%;">Add New Article</p>
+    </mat-card>
+    <ng-template #elseBlock><mat-card class="new-card">
+        <form id="new-form" [formGroup]="options">
+            <br>
+            <br>
+        <mat-form-field class="article-form" appearance="outline">
+            <input matInput id="url" placeholder="Picture Url" type="url" required>
+          </mat-form-field>
+          <br>
+          <br>
+          <mat-form-field appearance="outline" [floatLabel]="floatLabelControl.value">
+            <input matInput id="details" placeholder="Picture detatils">
+          </mat-form-field>
+        </form>
+          <br>
+          <br>
+          <span class="button"  (click)="add()" style="margin-left:10%;margin-right:0px;font-size: large;" mat-raised-button color="primary">Submit</span>
+          <span  class="button" style="color: grey;margin-left:10%; font-size: large;" (click)="toggleNew()">Cancel</span>
+    </mat-card></ng-template>
+  </div>

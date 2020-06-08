@@ -3,9 +3,9 @@ import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Constants } from '../../assets/constants';
+import {Observable} from 'rxjs';
 import {
   trigger,
-  state,
   style,
   animate,
   transition,
@@ -33,6 +33,7 @@ import {
 })
 export class ListComponent implements OnInit {
   load:boolean=true;
+  fileToUpload: File = null;
   articles:Array<Article>;
   updateImage:number;
   updateDetails:number;
@@ -64,6 +65,37 @@ export class ListComponent implements OnInit {
     this.updateDetails=i;
     this.ref.detectChanges()
   }
+  async handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+    await this.postFile(this.fileToUpload)
+  }
+  postFile(fileToUpload: File): Promise<any> {
+    const endpoint = Constants.BASEURL+"/uploadImage";
+    const formData: FormData = new FormData();
+    formData.append('upload', fileToUpload, fileToUpload.name);
+    return this.http
+      .post(endpoint, formData, {}).toPromise().then((r:{error:Boolean,url:string
+      })=>{
+        console.log(r.error)
+        if((r.error))
+        return
+        this.articles[this.updateImage].pic=r.url;
+        return new Promise((resolve,reject)=>{
+          this.http.post<any>(Constants.BASEURL+"/update",{
+            update:"image",
+            image:r.url,
+            id:this.articles[this.updateImage].id
+          }).subscribe((data)=>{
+            resolve(data)
+          })
+        }).then(r=>{
+          this.updateImage=-1
+          this.ref.detectChanges()
+        }).catch(e=>{
+          console.log(e)
+        })
+      })
+}
   async updateImageValue(){
     if(this.updateImage==-1)
     return

@@ -11,6 +11,12 @@
             <span  class="button" (click)="setupdateDetails(i)">Update Details</span>
         </div>
         <div *ngIf="i==updateImage">
+          <div style="font-size: medium;">
+            <label  style="font-size: medium;" for="file">Choose File</label>
+            <input  style="font-size: medium;" type="file"
+                   id="file"
+                   (change)="handleFileInput($event.target.files)">
+          </div>
             <mat-form-field style="margin-bottom: 5px;" appearance="outline" [floatLabel]="floatLabelControl.value">
                 <input matInput id="updateImage" placeholder="New Url" type="text">
                 </mat-form-field>

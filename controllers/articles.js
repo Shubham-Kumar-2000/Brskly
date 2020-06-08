@@ -1,4 +1,8 @@
 let Article=require('../Models/Articles');
+module.exports.uploadLink=async(req,res)=>{
+    res.status(200).json({error:false,url:process.env.BASEURL+'/images/'+req.file.filename})
+}
+
 module.exports.getAll=async(req,res)=>{
     try{
         Article.getAll(req.con,(e,result)=>{
